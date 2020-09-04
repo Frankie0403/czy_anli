@@ -3,9 +3,9 @@ package cn.edu.zucc.personplan.util;
 import java.sql.Connection;
 
 public class DBUtil {
-	private static final String jdbcUrl="jdbc:mysql://localhost:3306/booklib";
+	private static final String jdbcUrl="jdbc:mysql://localhost:3306/plan";
 	private static final String dbUser="root";
-	private static final String dbPwd="123";
+	private static final String dbPwd="root";
 	static{
 		try {
 			Class.forName("com.mysql.jdbc.Driver");

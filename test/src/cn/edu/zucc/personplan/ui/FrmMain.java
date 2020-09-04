@@ -167,7 +167,7 @@ public class FrmMain extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				PersonPlanUtil.planManager.deletePlan(this.curPlan);
+				PersonPlanUtil.planManager.deletePlan(this.curPlan);//É¾³ý
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "´íÎó",JOptionPane.ERROR_MESSAGE);
 				return;
