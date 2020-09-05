@@ -5,7 +5,7 @@ import java.sql.Connection;
 public class DBUtil {
 	private static final String jdbcUrl="jdbc:mysql://localhost:3306/plan";
 	private static final String dbUser="root";
-	private static final String dbPwd="root";
+	private static final String dbPwd="123";
 	static{
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
