@@ -100,40 +100,43 @@ public class ExampleStepManager implements IStepManager {
 	@Override
 	public List<BeanStep> loadSteps(BeanPlan plan) throws BaseException {
 		List<BeanStep> result=new ArrayList<BeanStep>();
-		BeanStep s=new BeanStep();
-		Connection conn=null;
+		int plan_id = 0;
+		plan_id = plan.getPlan_id();
+		Connection conn = null;
 		try {
-			conn=DBUtil.getConnection();
-			String sql="select step_order,step_name,plan_begin_time,plan_end_time,"
-					+ "real_begin_time,real_end_time,step_id,plan_id from tbl_step "
-					+ "where plan_id=? order by step_order";
-			java.sql.PreparedStatement pst=conn.prepareStatement(sql);
-			pst.setInt(1, plan.getPlan_id());
+			conn = DBUtil.getConnection();
+			
+			String sql = "select * from tbl_step where plan_id = ? order by step_order";
+			java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+			pst.setInt(1, plan_id);
 			java.sql.ResultSet rs = pst.executeQuery();
 			while(rs.next()) {
-				s.setStep_order(rs.getInt(1));
-				s.setStep_name(rs.getString(2));
-				s.setPlan_begin_time(rs.getTimestamp(3));
-				s.setPlan_end_time(rs.getTimestamp(4));
-				s.setReal_begin_time(rs.getTimestamp(5));
-				s.setReal_end_time(rs.getTimestamp(6));
-				s.setStep_id(rs.getInt(7));
-				s.setPlan_id(rs.getInt(8));
+				BeanStep s = new BeanStep();
+				s.setStep_id(rs.getInt(1));
+				s.setPlan_id(rs.getInt(2));
+				s.setStep_order(rs.getInt(3));
+				s.setStep_name(rs.getString(4));
+				s.setPlan_begin_time(rs.getDate(5));
+				s.setPlan_end_time(rs.getDate(6));
+				s.setReal_begin_time(rs.getDate(7));
+				s.setReal_end_time(rs.getDate(8));
 				result.add(s);
 			}
-			return result;
+			rs.close();
+			pst.close();
 			
-		}catch (SQLException e) {
-			throw new DbException(e);
-		}finally{
-			if(conn!=null)
+		}catch(Exception ex) {
+			throw new DbException(ex);
+		}finally {
+			if(conn != null) {
 				try {
 					conn.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
+				}catch(SQLException e) {
 					e.printStackTrace();
 				}
+			}
 		}
+		return result;
 	}
 
 	@Override
@@ -348,10 +351,11 @@ public class ExampleStepManager implements IStepManager {
 		int step_order = 0;
 		int step_orderdown = 0;
 		int step_orderup= 0;
+		int step_count=0;
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			String sql = "select tbl_plan.plan_id,tbl_step.step_order"
+			String sql = "select tbl_plan.plan_id,tbl_step.step_order，tbl_plan.step_count"
 					+ " from tbl_plan,tbl_step"
 					+ " where tbl_plan.plan_id = tbl_step.plan_id"
 					+ " and step_id = " + step_id;
@@ -360,12 +364,13 @@ public class ExampleStepManager implements IStepManager {
 			if(rs.next()) {
 				plan_id = rs.getInt(1);
 				step_order = rs.getInt(2);
+				step_count = rs.getInt(3);
 				step_orderup = step_order - 1;
 				step_orderdown = step_order + 1;
-				if(step_orderup == 0) {
+				if(step_orderdown > step_count) {
 					rs.close();
 					st.close();
-					throw new BusinessException("该步骤无法上移");
+					throw new BusinessException("该步骤无法下+移");
 				}
 			}
 			else {

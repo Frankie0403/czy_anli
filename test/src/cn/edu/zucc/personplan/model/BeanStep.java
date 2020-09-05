@@ -126,9 +126,6 @@ public class BeanStep {
 		this.real_end_time = real_end_time;
 	}
 
-
-
-
 	public String getCell(int col){
 		if(col==0) return this.getStep_id()+"";
 		else if(col==1) return this.getStep_name();

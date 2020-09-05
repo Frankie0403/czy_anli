@@ -22,9 +22,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.mchange.v2.codegen.bean.BeangenUtils;
+
 import cn.edu.zucc.personplan.PersonPlanUtil;
 import cn.edu.zucc.personplan.model.BeanPlan;
 import cn.edu.zucc.personplan.model.BeanStep;
+import cn.edu.zucc.personplan.model.BeanUser;
 import cn.edu.zucc.personplan.util.BaseException;
 
 
@@ -145,7 +148,7 @@ public class FrmMain extends JFrame implements ActionListener {
 	    this.reloadPlanTable();
 	    //状态栏
 	    statusBar.setLayout(new FlowLayout(FlowLayout.LEFT));
-	    JLabel label=new JLabel("您好!");//修改成   您好！+登陆用户名
+	    JLabel label=new JLabel("您好!"+BeanUser.currentLoginUser.getUserid());//修改成   您好！+登陆用户名
 	    statusBar.add(label);
 	    this.getContentPane().add(statusBar,BorderLayout.SOUTH);
 	    this.addWindowListener(new WindowAdapter(){   
@@ -159,8 +162,8 @@ public class FrmMain extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==this.menuItem_AddPlan){
 			FrmAddPlan dlg=new FrmAddPlan(this,"添加计划",true);
-			this.reloadPlanTable();
 			dlg.setVisible(true);
+			this.reloadPlanTable(); 
 		}
 		else if(e.getSource()==this.menuItem_DeletePlan){
 			if(this.curPlan==null) {
@@ -168,8 +171,8 @@ public class FrmMain extends JFrame implements ActionListener {
 				return;
 			}
 			try {
-				PersonPlanUtil.planManager.deletePlan(this.curPlan);//删除
-				this.reloadPlanTable();///
+				PersonPlanUtil.planManager.deletePlan(this.curPlan);
+				this.reloadPlanTable(); 
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -179,6 +182,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			FrmAddStep dlg=new FrmAddStep(this,"添加步骤",true);
 			dlg.plan=curPlan;
 			dlg.setVisible(true);
+
+			this.reloadPlanTable();
 		}
 		else if(e.getSource()==this.menuItem_DeleteStep){
 			int i=FrmMain.this.dataTableStep.getSelectedRow();
@@ -188,8 +193,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 			try {
 				PersonPlanUtil.stepManager.deleteStep(this.planSteps.get(i));
-				this.reloadPlanStepTabel(i); //refresh
-				this.reloadPlanTable();///
+				this.reloadPlanStepTabel(i); 
+				this.reloadPlanTable(); 
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -203,8 +208,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 			try {
 				PersonPlanUtil.stepManager.startStep(this.planSteps.get(i));
-				this.reloadPlanStepTabel(i); //refresh
-				this.reloadPlanTable();//
+				this.reloadPlanStepTabel(i); 
+				this.reloadPlanTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -218,8 +223,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 			try {
 				PersonPlanUtil.stepManager.finishStep(this.planSteps.get(i));
-				this.reloadPlanStepTabel(i); //refresh
-				this.reloadPlanTable();//
+				this.reloadPlanStepTabel(i); 
+				this.reloadPlanTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -233,8 +238,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 			try {
 				PersonPlanUtil.stepManager.moveUp(this.planSteps.get(i));
-				this.reloadPlanStepTabel(i); //refresh
-				this.reloadPlanTable();//
+				this.reloadPlanStepTabel(i); 
+				this.reloadPlanTable();
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
@@ -248,8 +253,8 @@ public class FrmMain extends JFrame implements ActionListener {
 			}
 			try {
 				PersonPlanUtil.stepManager.moveDown(this.planSteps.get(i));
-				this.reloadPlanStepTabel(i); //refresh
-				this.reloadPlanTable();//
+				this.reloadPlanStepTabel(i); 
+				this.reloadPlanTable(); 
 			} catch (BaseException e1) {
 				JOptionPane.showMessageDialog(null, e1.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
 				return;
